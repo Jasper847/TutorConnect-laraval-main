@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Student;
 use App\Http\Controllers\Tutor;
+use App\Http\Controllers\Tutor\TutorProfileController;
 use App\Http\Controllers\TutorDirectoryController;
 use Illuminate\Support\Facades\Route;
 
@@ -49,20 +50,24 @@ Route::prefix('student')->name('student.')->middleware(['auth', 'student'])->gro
 
 // ==================== TUTOR PORTAL ====================
 Route::prefix('tutor')->name('tutor.')->middleware(['auth', 'tutor'])->group(function () {
-    Route::get('/dashboard', [Tutor\DashboardController::class, 'index'])->name('dashboard');
-    Route::get('/profile', [Tutor\ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [Tutor\ProfileController::class, 'update'])->name('profile.update');
-    Route::get('/availability', [Tutor\AvailabilityController::class, 'index'])->name('availability.index');
-    Route::post('/availability', [Tutor\AvailabilityController::class, 'update'])->name('availability.update');
+    Route::get('/dashboard', [TutorProfileController::class, 'dashboard'])->name('dashboard');
+    Route::get('/profile', [TutorProfileController::class, 'editProfile'])->name('profile.edit');
+    Route::patch('/profile', [TutorProfileController::class, 'updateProfile'])->name('profile.update');
+    
+    // Availability
+    Route::get('/availability', [TutorProfileController::class, 'setAvailability'])->name('availability.index');
+    Route::post('/availability', [TutorProfileController::class, 'updateAvailability'])->name('availability.update');
 
     // Bookings Management
-    Route::get('/bookings', [Tutor\BookingController::class, 'index'])->name('bookings.index');
-    Route::post('/bookings/{booking}/confirm', [Tutor\BookingController::class, 'confirm'])->name('bookings.confirm');
-    Route::post('/bookings/{booking}/complete', [Tutor\BookingController::class, 'complete'])->name('bookings.complete');
-    Route::post('/bookings/{booking}/cancel', [Tutor\BookingController::class, 'cancel'])->name('bookings.cancel');
+    Route::get('/bookings', [TutorProfileController::class, 'myBookings'])->name('bookings.index');
+    Route::post('/bookings/{booking}/confirm', [TutorProfileController::class, 'confirmBooking'])->name('bookings.confirm');
+    Route::post('/bookings/{booking}/complete', [TutorProfileController::class, 'completeBooking'])->name('bookings.complete');
+    Route::post('/bookings/{booking}/cancel', [TutorProfileController::class, 'cancelBooking'])->name('bookings.cancel');
 
-    // Reviews, Messages, Study Materials
-    Route::get('/reviews', [Tutor\ReviewController::class, 'index'])->name('reviews.index');
+    // Reviews
+    Route::get('/reviews', [TutorProfileController::class, 'myReviews'])->name('reviews.index');
+
+    // Messages & Materials
     Route::get('/messages', [Tutor\MessageController::class, 'index'])->name('messages.index');
     Route::get('/messages/{student}', [Tutor\MessageController::class, 'show'])->name('messages.show');
     Route::post('/messages/{student}', [Tutor\MessageController::class, 'send'])->name('messages.send');

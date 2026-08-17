@@ -14,17 +14,20 @@ class TutorDirectoryController extends Controller
     {
         $subjects = Subject::orderBy('name')->get();
 
-        $query = TutorProfile::with(['user', 'subjects', 'availabilities'])
+        $query = TutorProfile::with(['user', 'availabilities'])
             ->whereHas('user', function ($q) {
                 $q->where('is_active', true);
             });
 
-        // Search by name, headline, bio
+        // Keyword search (name, headline, bio, city, or subject)
         if ($request->filled('q')) {
             $searchTerm = '%' . $request->q . '%';
             $query->where(function ($q) use ($searchTerm) {
                 $q->where('headline', 'like', $searchTerm)
                   ->orWhere('bio', 'like', $searchTerm)
+                  ->orWhere('subjects', 'like', $searchTerm)
+                  ->orWhere('education', 'like', $searchTerm)
+                  ->orWhere('location', 'like', $searchTerm)
                   ->orWhereHas('user', function ($userQ) use ($searchTerm) {
                       $userQ->where('name', 'like', $searchTerm)
                             ->orWhere('city', 'like', $searchTerm);
@@ -34,8 +37,13 @@ class TutorDirectoryController extends Controller
 
         // Filter by Subject
         if ($request->filled('subject')) {
-            $query->whereHas('subjects', function ($q) use ($request) {
-                $q->where('slug', $request->subject)->orWhere('subjects.id', $request->subject);
+            $subjParam = $request->subject;
+            $subjectObj = Subject::where('slug', $subjParam)->orWhere('name', $subjParam)->first();
+            $subjName = $subjectObj ? $subjectObj->name : $subjParam;
+            
+            $query->where(function ($q) use ($subjName, $subjParam) {
+                $q->where('subjects', 'like', '%' . $subjName . '%')
+                  ->orWhere('subjects', 'like', '%' . $subjParam . '%');
             });
         }
 
@@ -47,16 +55,9 @@ class TutorDirectoryController extends Controller
             $query->where('hourly_rate', '<=', (float)$request->max_price);
         }
 
-        // Filter by Teaching Mode
-        if ($request->filled('mode') && $request->mode !== 'all') {
-            $query->where(function ($q) use ($request) {
-                $q->where('teaching_mode', $request->mode)->orWhere('teaching_mode', 'both');
-            });
-        }
-
         // Filter by Rating
         if ($request->filled('rating')) {
-            $query->where('rating_cache', '>=', (float)$request->rating);
+            $query->where('avg_rating', '>=', (float)$request->rating);
         }
 
         // Filter by Verified only
@@ -74,13 +75,13 @@ class TutorDirectoryController extends Controller
                 $query->orderBy('hourly_rate', 'desc');
                 break;
             case 'rating':
-                $query->orderBy('rating_cache', 'desc');
+                $query->orderBy('avg_rating', 'desc');
                 break;
             case 'experience':
                 $query->orderBy('experience_years', 'desc');
                 break;
             default:
-                $query->orderBy('is_verified', 'desc')->orderBy('rating_cache', 'desc');
+                $query->orderBy('is_verified', 'desc')->orderBy('avg_rating', 'desc');
                 break;
         }
 
@@ -93,7 +94,7 @@ class TutorDirectoryController extends Controller
     {
         $tutor = User::where('role', 'tutor')
             ->where('is_active', true)
-            ->with(['tutorProfile.subjects', 'tutorProfile.availabilities'])
+            ->with(['tutorProfile.availabilities'])
             ->findOrFail($id);
 
         $reviews = Review::where('tutor_id', $id)
@@ -103,10 +104,7 @@ class TutorDirectoryController extends Controller
 
         $relatedTutors = TutorProfile::with('user')
             ->where('user_id', '!=', $id)
-            ->whereHas('subjects', function ($q) use ($tutor) {
-                $subjectIds = $tutor->tutorProfile->subjects->pluck('id');
-                $q->whereIn('subjects.id', $subjectIds);
-            })
+            ->where('is_available', true)
             ->take(3)
             ->get();
 

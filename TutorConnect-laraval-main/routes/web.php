@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Student;
+use App\Http\Controllers\Student\StudentController;
 use App\Http\Controllers\Tutor;
 use App\Http\Controllers\Tutor\TutorProfileController;
 use App\Http\Controllers\TutorDirectoryController;
@@ -19,26 +20,31 @@ require __DIR__.'/auth.php';
 
 // ==================== STUDENT PORTAL ====================
 Route::prefix('student')->name('student.')->middleware(['auth', 'student'])->group(function () {
-    Route::get('/dashboard', [Student\DashboardController::class, 'index'])->name('dashboard');
-    Route::get('/profile', [Student\ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [Student\ProfileController::class, 'update'])->name('profile.update');
+    Route::get('/dashboard', [StudentController::class, 'dashboard'])->name('dashboard');
+    Route::get('/profile', [StudentController::class, 'editProfile'])->name('profile.edit');
+    Route::patch('/profile', [StudentController::class, 'updateProfile'])->name('profile.update');
+
+    // Search & Browse Tutors
+    Route::get('/tutors', [StudentController::class, 'searchTutors'])->name('tutors.index');
+    Route::get('/tutors/{id}', [StudentController::class, 'tutorDetail'])->name('tutors.show');
+    Route::get('/tutors/{tutor}/slots', [StudentController::class, 'getTutorSlots'])->name('tutors.slots');
 
     // Bookings & Checkout
-    Route::get('/book/{tutor}', [Student\BookingController::class, 'create'])->name('bookings.create');
-    Route::post('/book/{tutor}', [Student\BookingController::class, 'store'])->name('bookings.store');
-    Route::get('/bookings', [Student\BookingController::class, 'index'])->name('bookings.index');
+    Route::get('/book/{tutor}', [StudentController::class, 'bookTutor'])->name('bookings.create');
+    Route::post('/book/{tutor}', [StudentController::class, 'storeBooking'])->name('bookings.store');
+    Route::get('/bookings', [StudentController::class, 'myBookings'])->name('bookings.index');
     Route::get('/bookings/{booking}', [Student\BookingController::class, 'show'])->name('bookings.show');
     Route::post('/bookings/{booking}/cancel', [Student\BookingController::class, 'cancel'])->name('bookings.cancel');
 
     // Stripe Sandbox Checkout
     Route::get('/payment/checkout/{booking}', [Student\PaymentController::class, 'checkout'])->name('payment.checkout');
-    Route::post('/payment/process/{booking}', [Student\PaymentController::class, 'processSandbox'])->name('payment.process');
-    Route::get('/payment/success/{booking}', [Student\PaymentController::class, 'success'])->name('payment.success');
-    Route::get('/payment/cancel/{booking}', [Student\PaymentController::class, 'cancel'])->name('payment.cancel');
+    Route::post('/payment/process/{booking}', [Student\PaymentController::class, 'processPayment'])->name('payment.process');
+    Route::get('/payment/success/{booking}', [Student\PaymentController::class, 'paymentSuccess'])->name('payment.success');
+    Route::get('/payment/cancel/{booking}', [Student\PaymentController::class, 'paymentCancel'])->name('payment.cancel');
 
     // Reviews
-    Route::get('/bookings/{booking}/review', [Student\ReviewController::class, 'create'])->name('reviews.create');
-    Route::post('/bookings/{booking}/review', [Student\ReviewController::class, 'store'])->name('reviews.store');
+    Route::get('/bookings/{booking}/review', [StudentController::class, 'leaveReview'])->name('reviews.create');
+    Route::post('/bookings/{booking}/review', [StudentController::class, 'storeReview'])->name('reviews.store');
 
     // Messages & Study Materials
     Route::get('/messages', [Student\MessageController::class, 'index'])->name('messages.index');
@@ -78,23 +84,31 @@ Route::prefix('tutor')->name('tutor.')->middleware(['auth', 'tutor'])->group(fun
 
 // ==================== ADMIN PORTAL ====================
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function () {
-    Route::get('/dashboard', [Admin\DashboardController::class, 'index'])->name('dashboard');
-    Route::get('/users', [Admin\UserController::class, 'index'])->name('users.index');
-    Route::post('/users/{user}/toggle-status', [Admin\UserController::class, 'toggleStatus'])->name('users.toggle');
-    Route::delete('/users/{user}', [Admin\UserController::class, 'destroy'])->name('users.destroy');
+    Route::get('/dashboard', [Admin\AdminController::class, 'dashboard'])->name('dashboard');
+    Route::get('/users', [Admin\AdminController::class, 'users'])->name('users.index');
+    Route::post('/users/{user}/toggle-status', [Admin\AdminController::class, 'toggleUserStatus'])->name('users.toggle');
+    Route::delete('/users/{user}', [Admin\AdminController::class, 'destroyUser'])->name('users.destroy');
 
-    // Verifications
-    Route::get('/verifications', [Admin\TutorVerificationController::class, 'index'])->name('verifications.index');
-    Route::post('/verifications/{tutor}/verify', [Admin\TutorVerificationController::class, 'verify'])->name('verifications.verify');
-    Route::post('/verifications/{tutor}/reject', [Admin\TutorVerificationController::class, 'reject'])->name('verifications.reject');
+    // Tutors Management & Verifications
+    Route::get('/tutors', [Admin\AdminController::class, 'tutors'])->name('tutors.index');
+    Route::get('/verifications', [Admin\AdminController::class, 'tutors'])->name('verifications.index');
+    Route::post('/tutors/{tutor}/verify', [Admin\AdminController::class, 'verifyTutor'])->name('tutors.verify');
+    Route::post('/tutors/{tutor}/unverify', [Admin\AdminController::class, 'unverifyTutor'])->name('tutors.unverify');
+    Route::post('/verifications/{tutor}/verify', [Admin\AdminController::class, 'verifyTutor'])->name('verifications.verify');
+    Route::post('/verifications/{tutor}/reject', [Admin\AdminController::class, 'unverifyTutor'])->name('verifications.reject');
 
     // Bookings Audit
-    Route::get('/bookings', [Admin\BookingController::class, 'index'])->name('bookings.index');
+    Route::get('/bookings', [Admin\AdminController::class, 'bookings'])->name('bookings.index');
     Route::get('/bookings/{booking}', [Admin\BookingController::class, 'show'])->name('bookings.show');
-    Route::post('/bookings/{booking}/cancel', [Admin\BookingController::class, 'cancel'])->name('bookings.cancel');
+    Route::post('/bookings/{booking}/cancel', [Admin\AdminController::class, 'cancelBooking'])->name('bookings.cancel');
 
-    // Subjects & Reviews
+    // Reviews Moderation
+    Route::get('/reviews', [Admin\AdminController::class, 'reviews'])->name('reviews.index');
+    Route::delete('/reviews/{review}', [Admin\AdminController::class, 'destroyReview'])->name('reviews.destroy');
+
+    // Statistics & Analytics
+    Route::get('/stats', [Admin\AdminController::class, 'stats'])->name('stats.index');
+    
+    // Subject catalog
     Route::resource('subjects', Admin\SubjectController::class)->except(['create', 'show']);
-    Route::get('/reviews', [Admin\ReviewController::class, 'index'])->name('reviews.index');
-    Route::delete('/reviews/{review}', [Admin\ReviewController::class, 'destroy'])->name('reviews.destroy');
 });

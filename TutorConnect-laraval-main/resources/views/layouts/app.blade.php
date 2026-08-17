@@ -160,22 +160,22 @@
                         @elseif(auth()->user()->isAdmin())
                             <p class="px-3 text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2">Admin Console</p>
                             <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition-all {{ request()->routeIs('admin.dashboard') ? 'bg-primary-800 text-white font-semibold shadow-md shadow-primary-800/20' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}">
-                                <i class="fa-solid fa-chart-line w-5 text-center"></i> Overview & KPIs
+                                <i class="fa-solid fa-gauge w-5 text-center"></i> Dashboard
                             </a>
                             <a href="{{ route('admin.users.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition-all {{ request()->routeIs('admin.users.*') ? 'bg-primary-800 text-white font-semibold shadow-md shadow-primary-800/20' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}">
-                                <i class="fa-solid fa-users w-5 text-center"></i> User Management
+                                <i class="fa-solid fa-users w-5 text-center"></i> Users
                             </a>
-                            <a href="{{ route('admin.verifications.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition-all {{ request()->routeIs('admin.verifications.*') ? 'bg-primary-800 text-white font-semibold shadow-md shadow-primary-800/20' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}">
-                                <i class="fa-solid fa-shield-halved w-5 text-center"></i> Tutor Verifications
+                            <a href="{{ route('admin.tutors.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition-all {{ request()->routeIs('admin.tutors.*') ? 'bg-primary-800 text-white font-semibold shadow-md shadow-primary-800/20' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}">
+                                <i class="fa-solid fa-chalkboard-user w-5 text-center"></i> Tutors
                             </a>
                             <a href="{{ route('admin.bookings.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition-all {{ request()->routeIs('admin.bookings.*') ? 'bg-primary-800 text-white font-semibold shadow-md shadow-primary-800/20' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}">
-                                <i class="fa-solid fa-calendar-check w-5 text-center"></i> All Bookings
-                            </a>
-                            <a href="{{ route('admin.subjects.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition-all {{ request()->routeIs('admin.subjects.*') ? 'bg-primary-800 text-white font-semibold shadow-md shadow-primary-800/20' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}">
-                                <i class="fa-solid fa-tags w-5 text-center"></i> Subject Catalog
+                                <i class="fa-solid fa-calendar-check w-5 text-center"></i> Bookings
                             </a>
                             <a href="{{ route('admin.reviews.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition-all {{ request()->routeIs('admin.reviews.*') ? 'bg-primary-800 text-white font-semibold shadow-md shadow-primary-800/20' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}">
-                                <i class="fa-solid fa-star-half-stroke w-5 text-center"></i> Moderate Reviews
+                                <i class="fa-solid fa-star-half-stroke w-5 text-center"></i> Reviews
+                            </a>
+                            <a href="{{ route('admin.stats.index') }}" class="flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition-all {{ request()->routeIs('admin.stats.*') ? 'bg-primary-800 text-white font-semibold shadow-md shadow-primary-800/20' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}">
+                                <i class="fa-solid fa-chart-line w-5 text-center"></i> Statistics
                             </a>
                         @endif
                     </nav>

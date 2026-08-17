@@ -21,12 +21,12 @@ class DashboardController extends Controller
             'pending_verifications' => TutorProfile::where('is_verified', false)->count(),
             'total_bookings' => Booking::count(),
             'completed_bookings' => Booking::where('status', 'completed')->count(),
-            'total_revenue' => Payment::where('status', 'succeeded')->sum('amount'),
+            'total_revenue' => Payment::where('status', 'paid')->sum('amount'),
             'total_reviews' => Review::count(),
         ];
 
         $recentUsers = User::latest()->take(5)->get();
-        $recentBookings = Booking::with(['student', 'tutor.tutorProfile', 'subject'])->latest()->take(5)->get();
+        $recentBookings = Booking::with(['student', 'tutor.tutorProfile'])->latest()->take(5)->get();
         $pendingTutors = TutorProfile::with('user')->where('is_verified', false)->latest()->take(5)->get();
 
         return view('admin.dashboard', compact('stats', 'recentUsers', 'recentBookings', 'pendingTutors'));

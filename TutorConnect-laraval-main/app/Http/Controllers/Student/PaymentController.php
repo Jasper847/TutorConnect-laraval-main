@@ -16,7 +16,7 @@ class PaymentController extends Controller
     public function checkout($bookingId)
     {
         $booking = Booking::where('student_id', Auth::id())
-            ->with(['tutor.tutorProfile', 'subject'])
+            ->with(['tutor.tutorProfile'])
             ->findOrFail($bookingId);
 
         if ($booking->status === 'confirmed') {
@@ -42,14 +42,11 @@ class PaymentController extends Controller
         $payment = Payment::updateOrCreate(
             ['booking_id' => $booking->id],
             [
-                'user_id' => Auth::id(),
-                'stripe_session_id' => 'cs_test_' . Str::random(24),
-                'stripe_payment_intent_id' => 'pi_test_' . Str::random(24),
+                'stripe_payment_intent_id' => 'pi_demo_' . Str::random(24),
                 'amount' => $booking->total_amount,
-                'currency' => 'usd',
-                'status' => 'succeeded',
-                'payment_method' => 'stripe_card_sandbox',
-                'is_sandbox' => true,
+                'currency' => 'PKR',
+                'status' => 'paid',
+                'is_demo' => true,
             ]
         );
 
@@ -71,7 +68,7 @@ class PaymentController extends Controller
     public function success($bookingId)
     {
         $booking = Booking::where('student_id', Auth::id())
-            ->with(['tutor.tutorProfile', 'subject', 'payment'])
+            ->with(['tutor.tutorProfile', 'payment'])
             ->findOrFail($bookingId);
 
         return view('student.payment.success', compact('booking'));

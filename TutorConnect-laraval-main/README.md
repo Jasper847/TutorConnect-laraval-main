@@ -1,59 +1,119 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# TutorConnect — Professional Tutor Marketplace Platform
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+**TutorConnect** is a full-featured, multi-role tutor marketplace platform built with **Laravel 12**, **Blade**, **Tailwind CSS**, and **Alpine.js**. It enables students to discover verified subject mentors, schedule 1-on-1 online sessions, complete sandbox checkout, access study materials, and submit verified session reviews.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 🚀 Tech Stack
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- **Backend Framework**: Laravel 12 (PHP 8.2+)
+- **Frontend / Templating**: Laravel Blade + Alpine.js (reactive micro-interactions, modal management, live slot querying)
+- **Styling & Design System**: Tailwind CSS with tailored color tokens (Deep Blue `#1e40af`, Emerald `#059669`, Slate `#1e293b`)
+- **Typography**: Google Fonts (*Inter* for body typography, *Poppins* for headings)
+- **Database**: MySQL (fully normalized schema with 12 foreign-key ordered migrations)
+- **Authentication**: Multi-role Laravel Breeze (Student, Tutor, Admin)
+- **Payment Gateway**: Stripe Sandbox Test Mode (`is_demo = true`, simulated test cards)
+- **Icons**: FontAwesome 6 Pro CDN
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## 👥 Platform User Roles & Feature Matrix
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+### 1. 🎓 Student Experience
+- **Public Directory & Filter**: Search tutors by subject, price range in PKR, availability day, and star ratings.
+- **Tutor Profile**: View education history, biography, verified badges, weekly availability schedule, and reviews.
+- **Booking Wizard**: Subject selection, date picker with tutor schedule awareness, AJAX time-slot lookup, and order summary.
+- **Stripe Sandbox Checkout**: Pre-filled test card helper (`4242 4242 4242 4242`) with USD equivalent conversion.
+- **Student Dashboard**: Real-time stats, next 3 upcoming sessions, and personalized mentor recommendations matching `subjects_needed`.
+- **Verified Reviews**: 5-star rating submission form with Alpine.js interactive star picker for completed sessions.
+- **Study Materials & Chat**: 1-on-1 direct messaging and downloadable study resources.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### 2. 👨‍🏫 Tutor Workspace
+- **Tutor Dashboard**: Profile completion progress bar (0–100%), 4 KPI cards, upcoming 5 sessions table, and recent review quotes.
+- **Profile & Rates Editor**: Multi-select subject checkboxes (Math, Physics, English, Chemistry, CS, Biology, Urdu, Islamiat, History, Geography), PKR hourly rate, education background, bio (min 50 chars), and photo upload (`storage/app/public/photos`).
+- **Weekly Availability Builder**: 7-day schedule matrix (Monday–Sunday) with active hours toggles.
+- **Booking Management**: Confirm incoming requests (`pending` &rarr; `confirmed`), complete sessions (`confirmed` &rarr; `completed`), and decline requests.
+- **Reviews Breakdown**: 5-star rating distribution chart and feedback feed.
 
-## Laravel Sponsors
+### 3. 🛡️ Admin Console
+- **Executive Overview**: Total Users, Total Tutors, Total Students, Total Bookings, Demo Revenue, and CSS monthly bookings chart.
+- **User Governance**: Multi-role filtering, search, account activation/deactivation toggle, and deletion.
+- **Tutor Verifications**: Review educator credentials and grant/revoke official **Verified Educator** badges.
+- **Bookings Audit**: System-wide appointment inspection, date range filter, and administrative force-cancellation.
+- **Review Moderation**: Audit student comments and delete inappropriate entries with automatic tutor rating recalculation.
+- **Analytics & Growth**: Subject demand progress bars, tutor leaderboards, and monthly user acquisition tables.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+---
 
-### Premium Partners
+## 🔑 Demo Seed Accounts (Instant Testing)
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+The platform is pre-seeded with realistic demonstration accounts:
 
-## Contributing
+| Role | Email | Password | Description / Focus |
+| :--- | :--- | :--- | :--- |
+| **Admin** | `admin@tutorconnect.com` | `admin123` | Master administrator console with all permissions |
+| **Tutor** | `ahmed.khan@tutorconnect.com` | `password` | Mathematics & Calculus Specialist (PKR 3,500/hr) |
+| **Tutor** | `dr.sarah@tutorconnect.com` | `password` | Chemistry & Medical Entry Test Specialist (PKR 4,500/hr) |
+| **Tutor** | `fatima.noor@tutorconnect.com` | `password` | IELTS 8.5 Master Coach & English (PKR 3,000/hr) |
+| **Tutor** | `usman.farooq@tutorconnect.com` | `password` | Physics & Mechanics Specialist (PKR 4,000/hr) |
+| **Tutor** | `bilal.tariq@tutorconnect.com` | `password` | Python & Computer Science Specialist (PKR 4,000/hr) |
+| **Student** | `student@tutorconnect.com` | `password` | A-Levels Cambridge student with active bookings |
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+---
 
-## Code of Conduct
+## 💳 Stripe Sandbox Test Payment Credentials
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+All payment flows operate strictly in **Sandbox / Demonstration Mode** (`is_demo = true`):
 
-## Security Vulnerabilities
+- **Test Card Number**: `4242 4242 4242 4242`
+- **Expiration Date**: Any future date (e.g., `12/28`)
+- **Security Code (CVV)**: Any 3 digits (e.g., `123`)
+- **Auto-Fill Helper**: Click the **Auto-Fill Test Card** button on the checkout page to instantly populate test card values.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+---
 
-## License
+## 🛠️ Installation & Setup Guide
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Follow these steps to run TutorConnect locally:
+
+```bash
+# 1. Clone or extract the repository
+cd TutorConnect-laraval-main
+
+# 2. Install PHP and Composer dependencies
+composer install
+
+# 3. Environment configuration
+cp .env.example .env
+php artisan key:generate
+
+# 4. Configure MySQL database in .env:
+# DB_DATABASE=tutorconnect
+# DB_USERNAME=root
+# DB_PASSWORD=
+
+# 5. Run fresh database migrations and populate seed data
+php artisan migrate:fresh --seed
+
+# 6. Create symbolic link for public photo & material storage
+php artisan storage:link
+
+# 7. Start the local development server
+php artisan serve
+```
+
+Open your browser and navigate to `http://localhost:8000`.
+
+---
+
+## 📱 Mobile Responsiveness & Polish
+
+- Fully responsive across desktop (1440px+), tablet (768px), and mobile (375px) viewports.
+- Responsive off-canvas slide-out drawers powered by Alpine.js.
+- Clean flash alerts (`x-alert`) displaying success, error, and informational messages.
+- Custom branded `404 Not Found` and `403 Unauthorized` error pages.
+
+---
+
+## 📄 License
+This project is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).

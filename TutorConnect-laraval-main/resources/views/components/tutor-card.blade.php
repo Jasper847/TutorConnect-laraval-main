@@ -9,14 +9,14 @@
 @endphp
 
 @if($user && $profile)
-<div class="bg-white rounded-xl border border-gray-100 p-6 shadow-sm hover:shadow-md transition-all flex flex-col justify-between group">
+<div class="bg-white rounded-xl border border-gray-100 p-6 shadow-sm hover:shadow-md transition-all duration-200 flex flex-col justify-between group">
     <div>
         <!-- Tutor Header -->
         <div class="flex items-start gap-4 mb-4">
             <div class="relative shrink-0">
                 <img src="{{ $user->avatar_url }}" alt="{{ $user->name }}" class="w-14 h-14 rounded-xl object-cover ring-2 ring-gray-100">
                 @if($profile->is_verified)
-                    <span class="absolute -bottom-1 -right-1 bg-emerald-600 text-white w-5 h-5 rounded-full flex items-center justify-center text-[10px] ring-2 ring-white" title="Verified Tutor">
+                    <span class="absolute -bottom-1 -right-1 bg-emerald-600 text-white w-5 h-5 rounded-full flex items-center justify-center text-[10px] ring-2 ring-white shadow-xs" title="Verified Tutor">
                         <i class="fa-solid fa-check"></i>
                     </span>
                 @endif
@@ -27,11 +27,11 @@
                 </h3>
                 <p class="text-xs text-slate-500 truncate">{{ $profile->education ?: $profile->qualification }}</p>
                 
-                <!-- Rating -->
+                <!-- Golden Yellow Star Rating -->
                 <div class="flex items-center gap-1.5 mt-1">
-                    <div class="flex items-center text-amber-400 text-xs">
+                    <div class="flex items-center text-yellow-400 text-xs">
                         <i class="fa-solid fa-star"></i>
-                        <span class="ml-1 font-bold text-slate-900">{{ number_format($profile->avg_rating ?? $profile->rating_cache ?? 5.0, 1) }}</span>
+                        <span class="ml-1 font-bold text-slate-900">{{ number_format($profile->avg_rating ?? ($profile->rating_cache ?? 5.0), 1) }}</span>
                     </div>
                     <span class="text-xs text-slate-400">({{ $profile->reviews_count ?? 0 }})</span>
                 </div>
@@ -63,7 +63,7 @@
                 PKR {{ number_format($profile->hourly_rate, 0) }}<span class="text-[10px] font-normal text-slate-500">/hr</span>
             </p>
         </div>
-        <a href="{{ route('tutors.show', $user->id) }}" class="inline-flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold px-4 py-2 rounded-xl shadow-sm hover:shadow transition-all">
+        <a href="{{ route('tutors.show', $user->id) }}" class="inline-flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold px-4 py-2 rounded-xl shadow-sm hover:shadow transition-all duration-200">
             <span>Book Now</span>
             <i class="fa-solid fa-chevron-right text-[9px]"></i>
         </a>
